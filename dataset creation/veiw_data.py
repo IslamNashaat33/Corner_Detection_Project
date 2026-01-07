@@ -12,7 +12,7 @@ LABEL_DIR = os.path.join(DATASET_DIR, "labels")
 
 NUM_SAMPLES_TO_VIEW = 30     # how many strokes to show
 GRID_COLS = 4                # grid columns
-RANDOM_SAMPLE = False         # False = first N samples
+RANDOM_SAMPLE = True         # False = first N samples
 OFFSET = 300               # offset to start viewing from (None = middle of dataset, or set a specific number)
 
 # =========================
