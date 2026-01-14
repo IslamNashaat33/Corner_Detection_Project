@@ -1,0 +1,12 @@
+# Ignore everything by default
+*
+
+# Allow NN model, data creation, and DT model directories
+!NN model/
+!dataset creation/
+!DT_model/
+
+# Allow important files
+!.gitignore
+!README.md
+!requirements.txt
