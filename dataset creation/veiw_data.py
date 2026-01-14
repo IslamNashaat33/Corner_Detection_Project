@@ -10,10 +10,10 @@ DATASET_DIR = "dataset_intersections_v2"  # path to dataset
 STROKE_DIR = os.path.join(DATASET_DIR, "strokes")
 LABEL_DIR = os.path.join(DATASET_DIR, "labels")
 
-NUM_SAMPLES_TO_VIEW = 30     # how many strokes to show
+NUM_SAMPLES_TO_VIEW = 28     # how many strokes to show
 GRID_COLS = 4                # grid columns
 RANDOM_SAMPLE = True         # False = first N samples
-OFFSET = 300               # offset to start viewing from (None = middle of dataset, or set a specific number)
+OFFSET = 0               # offset to start viewing from (None = middle of dataset, or set a specific number)
 
 # =========================
 # LOAD FILE NAMES
