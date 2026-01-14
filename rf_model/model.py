@@ -11,7 +11,7 @@ from sklearn.metrics import (
     precision_recall_fscore_support,
     accuracy_score,
 )
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
 
 from . import config
 
@@ -51,6 +51,8 @@ class RandomForestCornerDetector:
             class_weight=class_weight,
         )
         self.is_trained = False
+        self.selected_feature_indices: Optional[np.ndarray] = None
+        self.selected_feature_names: Optional[List[str]] = None
     
     def train(self, X: np.ndarray, y: np.ndarray) -> None:
         """
@@ -63,6 +65,35 @@ class RandomForestCornerDetector:
         self.model.fit(X, y)
         self.is_trained = True
     
+    def set_selected_features(
+        self,
+        indices: np.ndarray,
+        names: List[str],
+    ) -> None:
+        """
+        Set the selected feature indices and names after feature selection.
+        
+        Args:
+            indices: Array of selected feature indices
+            names: List of selected feature names
+        """
+        self.selected_feature_indices = indices
+        self.selected_feature_names = names
+    
+    def apply_feature_selection(self, X: np.ndarray) -> np.ndarray:
+        """
+        Apply feature selection to input features if enabled.
+        
+        Args:
+            X: Full feature matrix
+            
+        Returns:
+            Selected features only (or full X if no selection)
+        """
+        if self.selected_feature_indices is not None:
+            return X[:, self.selected_feature_indices]
+        return X
+
     def predict(self, X: np.ndarray) -> np.ndarray:
         """
         Predict corner labels for feature matrix X.
@@ -146,13 +177,18 @@ class RandomForestCornerDetector:
     
     def save(self, filepath: str) -> None:
         """
-        Save the model to disk.
+        Save the model and feature selection info to disk.
         
         Args:
             filepath: Path to save the model
         """
         os.makedirs(os.path.dirname(filepath), exist_ok=True)
-        joblib.dump(self.model, filepath)
+        save_data = {
+            "model": self.model,
+            "selected_feature_indices": self.selected_feature_indices,
+            "selected_feature_names": self.selected_feature_names,
+        }
+        joblib.dump(save_data, filepath)
     
     def load(self, filepath: str) -> None:
         """
@@ -161,5 +197,17 @@ class RandomForestCornerDetector:
         Args:
             filepath: Path to the saved model
         """
-        self.model = joblib.load(filepath)
+        save_data = joblib.load(filepath)
+        
+        # Handle both old format (just model) and new format (dict with metadata)
+        if isinstance(save_data, dict):
+            self.model = save_data["model"]
+            self.selected_feature_indices = save_data.get("selected_feature_indices")
+            self.selected_feature_names = save_data.get("selected_feature_names")
+        else:
+            # Old format: just the model
+            self.model = save_data
+            self.selected_feature_indices = None
+            self.selected_feature_names = None
+        
         self.is_trained = True

@@ -47,6 +47,16 @@ def main():
     model.load(model_path)
     print(f"  Model loaded from: {model_path}")
     
+    # Apply feature selection if model has it
+    if model.selected_feature_indices is not None:
+        print(f"  Applying feature selection: {len(model.selected_feature_names)} features")
+        X_test = model.apply_feature_selection(X_test)
+        feature_names = model.selected_feature_names
+    else:
+        feature_names = FEATURE_NAMES
+    
+    print(f"  Final test features shape: {X_test.shape}")
+    
     # Evaluate
     print("\n--- Test Set Performance ---")
     test_metrics = model.evaluate(X_test, y_test)
@@ -65,7 +75,7 @@ def main():
     
     # Feature importance
     print("--- Feature Importance ---")
-    importance = model.get_feature_importance(FEATURE_NAMES)
+    importance = model.get_feature_importance(feature_names)
     sorted_importance = sorted(importance.items(), key=lambda x: x[1], reverse=True)
     for name, score in sorted_importance:
         print(f"  {name:20s}: {score:.4f}")

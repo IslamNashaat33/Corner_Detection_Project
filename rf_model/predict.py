@@ -4,7 +4,7 @@ Prediction utilities for corner detection on new strokes using Random Forest.
 import os
 import sys
 import numpy as np
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -30,7 +30,7 @@ def load_trained_model() -> RandomForestCornerDetector:
 
 def predict_corners(
     stroke: np.ndarray,
-    model: RandomForestCornerDetector = None,
+    model: Optional[RandomForestCornerDetector] = None,
     return_probabilities: bool = False,
 ) -> Tuple[np.ndarray, List[int], int]:
     """
@@ -52,6 +52,9 @@ def predict_corners(
     
     # Extract features
     features = extract_features(stroke, config.WINDOW_SIZE)
+    
+    # Apply feature selection if model has it
+    features = model.apply_feature_selection(features)
     
     # Predict
     predictions = model.predict(features)

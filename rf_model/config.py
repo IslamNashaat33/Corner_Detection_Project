@@ -25,3 +25,8 @@ MAX_DEPTH = 20  # Maximum depth of each tree
 MIN_SAMPLES_SPLIT = 5  # Minimum samples required to split a node
 MIN_SAMPLES_LEAF = 2  # Minimum samples required in a leaf node
 N_JOBS = -1  # Use all available CPU cores for parallel training
+
+# Feature selection parameters
+FEATURE_SELECTION_ENABLED = True  # Whether to perform feature selection
+FEATURE_SELECTION_THRESHOLD = "mean"  # Threshold: "mean", "median", or float
+FEATURE_SELECTION_MAX_FEATURES = None  # Max features to keep (None = no limit)
